@@ -5,6 +5,7 @@
  * You can modify it as you see fit but the methods
  * are purely to provide a base level of functionality.
  */
+namespace Activity;
 
 class Activity
 {
@@ -29,7 +30,7 @@ class Activity
      * @param string $activity Brief description
      * @return void
      */
-    public function insert($userId, $activityId, $activity)
+    public function insertActivity($userId, $activityId, $activity)
     {
         return;
     }

@@ -3,7 +3,8 @@ session_start();
 $orgId = $_SESSION['org_id'];
 $user_id = $_SESSION['user_id'];
 
-function getInput($field) {
+function getInput($field)
+{
     if (isset($_POST[$field])) {
         return $_POST[$field];
     } else {
@@ -11,13 +12,15 @@ function getInput($field) {
     }
 }
 
-function redirect($address) {
+function redirect($address)
+{
     $base = dirname($_SERVER['SCRIPT_NAME']);
     header('Location: ' . $base . DIRECTORY_SEPARATOR . $address . '.php');
 }
 
 require_once 'scripts/database/User.php';
-$User = new User($orgId, $user_id);
+use User as user;
+$User = new user($orgId, $user_id);
 
 // Submit button was clicked
 if (!empty($_POST)) {
@@ -28,7 +31,8 @@ if (!empty($_POST)) {
                 $names = trim(getInput('name'));
 
                 if (!preg_match($namePattern, $names)) {
-                    $error[] = "Your name must only contain characters, spaces or dots.";
+                    $error[] = "Your name must only contain characters, spaces";
+                    $error[] .= " or dots.";
                 }
 
                 $names = explode(' ', $names, 2);
@@ -41,13 +45,17 @@ if (!empty($_POST)) {
                     // returns true on success, false on failure
                     if ($User->updateNames($names)) {
                         require_once 'scripts/database/Activity.php';
-                        $Activity = new Activity($orgId);
-                        $Activity->insert($user_id, Activity::USER_ACTION, "Updated Names");
+                        use Activity as activity
+                        $Activity = new activity($orgId);
+                        $Activity->insertActivity($user_id, 
+                            Activity::USER_ACTION, 
+                            "Updated Names");
                         unset($Activity);
 
                         $success[] = "Your profile was successfully updated";
                     } else {
-                        $error[] = "It was not possible to update your profile at present time.";
+                        $error[] = "It was not possible to update your profile";
+                        $error[] = " at present time.";
                     }
                 }
                 break;
@@ -66,7 +74,8 @@ if (!empty($_POST)) {
                         $exists = $User->checkEmailExistence($email);
 
                         if (!empty($exists)) {
-                            $error[] = "Email already in use. Please enter a different email and try again.";
+                            $error[] = "Email already in use. Please enter a ";
+                            $error[] = "different email and try again.";
                         }
                     }
                 }
@@ -76,13 +85,17 @@ if (!empty($_POST)) {
                     if ($User->updateEmail($email)) {
 
                         require_once 'scripts/database/Activity.php';
-                        $Activity = new Activity($orgId);
-                        $Activity->insert($user_id, Activity::USER_ACTION, "Updated email address");
+                        $Activity = new activity($orgId);
+                        $Activity->insertActivity($user_id, 
+                            Activity::USER_ACTION, 
+                            "Updated email address");
                         unset($Activity);
 
                         $success[] = "Your profile was successfully updated";
                     } else {
-                        $error[] = "It was not possible to update your profile at present time.";
+                        $error[] = "It was not possible to update your profile";
+                        $error[] = " at present time.";
+
                     }
                 }
 
@@ -101,12 +114,15 @@ if (!empty($_POST)) {
                     if ($User->updatePassword($pw1)) {
                         require_once 'scripts/database/Activity.php';
                         $Activity = new Activity($orgId);
-                        $Activity->insert($user_id, Activity::USER_ACTION, "Updated password");
+                        $Activity->insertActivity($user_id, 
+                            Activity::USER_ACTION, 
+                            "Updated password");
                         unset($Activity);
 
                         $success[] = "Your profile was successfully updated";
                     } else {
-                        $error[] = "It was not possible to update your profile at present time.";
+                        $error[] = "It was not possible to update your profile";
+                        $error[] = " at present time.";
                     }
                 }
                 break;
@@ -126,7 +142,8 @@ if (!empty($success)) {
             case 'name':
                 $_SESSION['fname'] = $first_name = $names[0];
                 $_SESSION['lname'] = $lastName = $names[1];
-                $_SESSION['realname'] = $realname = ($first_name . " " . $lastName);
+                $realname = ($first_name . " " . $lastName);
+                $_SESSION['realname'] = $realname ;
                 $_SESSION['success'] = implode('<br>', $success);
                 redirect('profile');
                 break;
