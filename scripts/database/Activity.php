@@ -5,8 +5,9 @@
  * You can modify it as you see fit but the methods
  * are purely to provide a base level of functionality.
  */
-namespace Activity;
 
+namespace Activity;
+ 
 class Activity
 {
     /**

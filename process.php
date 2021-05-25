@@ -19,7 +19,10 @@ function redirect($address)
 }
 
 require_once 'scripts/database/User.php';
-use User as user;
+
+use User\User as user;
+use Activity\Activity as activity;
+
 $User = new user($orgId, $user_id);
 
 // Submit button was clicked
@@ -45,7 +48,7 @@ if (!empty($_POST)) {
                     // returns true on success, false on failure
                     if ($User->updateNames($names)) {
                         require_once 'scripts/database/Activity.php';
-                        use Activity as activity
+                        
                         $Activity = new activity($orgId);
                         $Activity->insertActivity($user_id, 
                             Activity::USER_ACTION, 
